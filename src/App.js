@@ -104,6 +104,18 @@ function App() {
     });
   };
 
+  // 증상 추가 함수
+  const 증상추가 = (증상) => {
+    if (!선택된증상목록.includes(증상)) {
+      증상목록설정([...선택된증상목록, 증상]);
+    }
+  };
+
+  // 증상 제거 함수
+  const 증상제거 = (제거할증상) => {
+    증상목록설정(선택된증상목록.filter(증상 => 증상 !== 제거할증상));
+  };
+
   return (
     <div className="app-container">
       {/* 1. 기본 정보 */}
@@ -214,7 +226,9 @@ function App() {
               onChange={(e) => 대분류선택처리(e.target.value)}
             >
               <option value="">대분류 선택</option>
-              {/* 대분류 옵션들 */}
+              {Object.keys(증상카테고리).map(분류 => (
+                <option key={분류} value={분류}>{분류}</option>
+              ))}
             </select>
 
             <select 
@@ -223,17 +237,36 @@ function App() {
               disabled={!대분류}
             >
               <option value="">중분류 선택</option>
-              {/* 중분류 션들 */}
+              {중분류목록.map(분류 => (
+                <option key={분류} value={분류}>{분류}</option>
+              ))}
             </select>
 
             <select 
               value={소분류}
-              onChange={(e) => 소분류선택처리(e.target.value)}
+              onChange={(e) => {
+                소분류선택처리(e.target.value);
+                if (e.target.value) {
+                  증상추가(e.target.value);
+                }
+              }}
               disabled={!중분류}
             >
               <option value="">증상 선택</option>
-              {/* 소분류 옵션들 */}
+              {소분류목록.map(증상 => (
+                <option key={증상} value={증상}>{증상}</option>
+              ))}
             </select>
+          </div>
+
+          {/* 선택된 증상 태그 */}
+          <div className="selected-symptoms">
+            {선택된증상목록.map(증상 => (
+              <span key={증상} className="symptom-tag">
+                {증상}
+                <button onClick={() => 증상제거(증상)}>&times;</button>
+              </span>
+            ))}
           </div>
         </div>
       </section>
