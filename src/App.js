@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import { 증상카테고리 } from './data/SymptomCategories';
 
 // 상수 데이터 선언 (컴포넌트 외부에)
 const 기호식목록 = [
@@ -49,6 +50,9 @@ function App() {
 
   // 스트레스 강도 상태
   const [스트레스강도, 스트레스강도설정] = useState('');
+
+  // 메모 상태
+  const [메모, 메모설정] = useState('');
 
   // 증상 선택 처리 함수들
   const 대분류선택처리 = (값) => {
@@ -391,6 +395,20 @@ function App() {
               rows="3"
             />
           </div>
+        </div>
+      </section>
+
+      {/* 메모 섹션 */}
+      <section className="info-section">
+        <h2>메모</h2>
+        <div className="memo-container">
+          <textarea 
+            className="memo-input"
+            value={메모}
+            onChange={(e) => 메모설정(e.target.value)}
+            placeholder="특이사항이나 추가 정보를 입력하세요"
+            rows="4"
+          />
         </div>
       </section>
     </div>

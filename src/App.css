@@ -991,3 +991,48 @@ select:focus {
     gap: 15px;
   }
 }
+
+/* 메모 섹션 스타일 */
+.memo-container {
+  padding: 10px 0;
+}
+
+.memo-input {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.memo-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+}
+
+.memo-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* 강도 선택 행 스타일 */
+.intensity-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .intensity-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
