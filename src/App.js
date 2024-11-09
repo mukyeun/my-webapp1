@@ -35,14 +35,11 @@ function App() {
   // 복용약물 상태
   const [선택된약물, 약물설정] = useState([]);
 
-  // 맥파분석 상태
+  // 맥파 데이터 상태 추가
   const [맥파데이터, 맥파데이터설정] = useState({
-    수축기혈압: '',
-    이완기혈압: '',
-    맥박수: '',
-    맥파전달속도: '',
-    혈관나이: '',
-    동맥경화도: ''
+    좌측맥박: '',
+    우측맥박: '',
+    특이사항: ''
   });
 
   // 운동 강도 상태
@@ -53,6 +50,15 @@ function App() {
 
   // 메모 상태
   const [메모, 메모설정] = useState('');
+
+  // 다크 모드 상태
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // 사용자 시스템의 다크 모드 설정 확인
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // localStorage에 저장된 테마 설정 확인
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme ? savedTheme === 'dark' : prefersDark;
+  });
 
   // 증상 선택 처리 함수들
   const 대분류선택처리 = (값) => {
@@ -104,8 +110,144 @@ function App() {
     });
   };
 
+  // 데이터 저장/불러오기 함수들
+  const 데이터저장 = () => {
+    const 저장할데이터 = {
+      이름,
+      성별,
+      주민번호,
+      연락처,
+      키,
+      체중,
+      성격,
+      선택된증상목록,
+      선택된기호식,
+      선택된약물,
+      맥파데이터,
+      운동강도,
+      스트레스강도,
+      메모
+    };
+
+    localStorage.setItem('healthInfo', JSON.stringify(저장할데이터));
+    alert('데이터가 저장되었습니다.');
+  };
+
+  const 데이터불러오기 = () => {
+    const 저장된데이터 = localStorage.getItem('healthInfo');
+    if (저장된데이터) {
+      const 파싱된데이터 = JSON.parse(저장된데이터);
+      
+      // 각 상태 업데이트
+      이름설정(파싱된데이터.이름 || '');
+      성별설정(파싱된데이터.성별 || '');
+      주민번호설정(파싱된데이터.주민번호 || '');
+      연락처설정(파싱된데이터.연락처 || '');
+      키설정(파싱된데이터.키 || '');
+      체중설정(파싱된데이터.체중 || '');
+      성격설정(파싱된데이터.성격 || '');
+      증상목록설정(파싱된데이터.선택된증상목록 || []);
+      기호식설정(파싱된데이터.선택된기호식 || []);
+      약물설정(파싱된데이터.선택된약물 || []);
+      맥파데이터설정(파싱된데이터.맥파데이터 || {});
+      운동강도설정(파싱된데이터.운동강도 || '');
+      스트레스강도설정(파싱된데이터.스트레스강도 || '');
+      메모설정(파싱된데이터.메모 || '');
+
+      alert('데이터를 불러습니.');
+    } else {
+      alert('저장된 데이터가 없습니다.');
+    }
+  };
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+      const newMode = !prev;
+      localStorage.setItem('theme', newMode ? 'dark' : 'light');
+      return newMode;
+    });
+  };
+
+  // 맥파 데이터 업데이트 함수
+  const 맥파데이터업데이트 = (필드, 값) => {
+    맥파데이터설정(이전데이터 => ({
+      ...이전데이터,
+      [필드]: 값
+    }));
+  };
+
+  // 데이터 내보내기 함수
+  const 데이터내보내기 = () => {
+    const 저장할데이터 = {
+      이름,
+      성별,
+      주민번호,
+      연락처,
+      키,
+      체중,
+      성격,
+      선택된증상목록,
+      선택된기호식,
+      선택된약물,
+      맥파데이터,
+      운동강도,
+      스트레스강도,
+      메모,
+      저장일시: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(저장할데이터, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `건강정보_${이름 || '무명'}_${new Date().toLocaleDateString()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  // 데이터 가져오기 함수
+  const 데이터가져오기 = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const 파싱된데이터 = JSON.parse(e.target.result);
+          
+          // 각 상태 업데이트
+          이름설정(파싱된데이터.이름 || '');
+          성별설정(파싱된데이터.성별 || '');
+          주민번호설정(파싱된데이터.주민번호 || '');
+          연락처설정(파싱된데이터.연락처 || '');
+          키설정(파싱된데이터.키 || '');
+          체중설정(파싱된데이터.체중 || '');
+          성격설정(파싱된데이터.성격 || '');
+          증상목록설정(파싱된데이터.선택된증상목록 || []);
+          기호식설정(파싱된데이터.선택된기호식 || []);
+          약물설정(파싱된데이터.선택된약물 || []);
+          맥파데이터설정(파싱된데이터.맥파데이터 || {});
+          운동강도설정(파싱된데이터.운동강도 || '');
+          스트레스강도설정(파싱된데이터.스트레스강도 || '');
+          메모설정(파싱된데이터.메모 || '');
+
+          alert('데이터를 성공적으로 가져왔습니다.');
+        } catch (error) {
+          alert('파일 형식이 올바르지 않습니다.');
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
   return (
-    <div className="app-container">
+    <div className={`app-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      <div className="theme-toggle">
+        <button onClick={toggleDarkMode}>
+          {isDarkMode ? '라이트 모드' : '다크 모드'}
+        </button>
+      </div>
       {/* 1. 기본 정보 */}
       <section className="info-section">
         <h2>기본 정보</h2>
@@ -129,7 +271,7 @@ function App() {
               onChange={(e) => 성별설정(e.target.value)}
             >
               <option value="">선택하세요</option>
-              <option value="male">남성</option>
+              <option value="male">남</option>
               <option value="female">여성</option>
             </select>
           </div>
@@ -163,7 +305,7 @@ function App() {
               className="modern-input"
               value={키}
               onChange={(e) => 키설정(e.target.value)}
-              placeholder="키를 입력하세요"
+              placeholder=" 입력하세요"
             />
           </div>
 
@@ -197,7 +339,7 @@ function App() {
             >
               <option value="">선택하세요</option>
               <option value="calm">차분함</option>
-              <option value="active">활동적</option>
+              <option value="active">활적</option>
               <option value="sensitive">예민함</option>
             </select>
           </div>
@@ -214,7 +356,7 @@ function App() {
               onChange={(e) => 대분류선택처리(e.target.value)}
             >
               <option value="">대분류 선택</option>
-              {/* 대분류 옵션들 */}
+              {/* 대분 옵션들 */}
             </select>
 
             <select 
@@ -378,7 +520,7 @@ function App() {
               onChange={(e) => 맥파데이터처리('동맥경화도', e.target.value)}
             >
               <option value="">선택하세요</option>
-              <option value="normal">정상</option>
+              <option value="normal">정</option>
               <option value="mild">경도</option>
               <option value="moderate">중등도</option>
               <option value="severe">중증</option>
@@ -387,10 +529,10 @@ function App() {
 
           <div className="input-group full-width">
             <label>특이사항</label>
-            <textarea 
+            <textarea
               className="modern-input"
               value={맥파데이터.특이사항}
-              onChange={(e) => 맥파데이터처리('특이사항', e.target.value)}
+              onChange={(e) => 맥파데이터업데이트('특이사항', e.target.value)}
               placeholder="특이사항을 입력하세요"
               rows="3"
             />
@@ -411,6 +553,33 @@ function App() {
           />
         </div>
       </section>
+
+      {/* 데이터 저장/불러오기 버튼 */}
+      <div className="data-control-buttons">
+        <div className="button-group">
+          <button className="save-button" onClick={데이터저장}>
+            로컬에 저장
+          </button>
+          <button className="load-button" onClick={데이터불러오기}>
+            로컬에서 불러오기
+          </button>
+        </div>
+        
+        <div className="button-group">
+          <button className="export-button" onClick={데이터내보내기}>
+            파일로 내보내기
+          </button>
+          <label className="import-button">
+            파일에서 가져오기
+            <input
+              type="file"
+              accept=".json"
+              onChange={데이터가져오기}
+              style={{ display: 'none' }}
+            />
+          </label>
+        </div>
+      </div>
     </div>
   );
 }
