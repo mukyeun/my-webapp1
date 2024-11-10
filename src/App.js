@@ -153,9 +153,11 @@ function App() {
 
   const [파분석, 파분석설정] = useState('');
 
-  const handleSubmit = () => {
-    // 폼 데이터를 객체로 구성
+  // 데이터 저장 함수
+  const saveHealthData = () => {
     const formData = {
+      id: Date.now(), // 고유 ID 생성
+      date: new Date().toISOString(), // 저장 날짜
       기본정보,
       성격,
       운동량,
@@ -163,16 +165,64 @@ function App() {
       복용약물,
       복용기간,
       기호식,
-      파분석,
+      맥파분석,
+      selectedSymptoms, // 선택된 증상들
       메모
     };
 
-    // 콘솔에 데이터 출력 (테스트용)
-    console.log('제출된 데이터:', formData);
+    // 기존 데이터 불러오기
+    const existingData = JSON.parse(localStorage.getItem('healthRecords') || '[]');
+    
+    // 새 데이터 추가
+    const updatedData = [...existingData, formData];
+    
+    // localStorage에 저장
+    localStorage.setItem('healthRecords', JSON.stringify(updatedData));
 
-    // 여기에 실제 데터 제출 로직 추가
-    // 예: API 호출, 로컬 스토리지 저장 등
-    alert('데이터가 성공적으로 저장되었습니다.');
+    alert('건강 기록이 저장되었습니다.');
+    return formData.id; // 저장된 데이터의 ID 반환
+  };
+
+  // 특정 ID의 데이터 불러오기
+  const loadHealthData = (id) => {
+    const records = JSON.parse(localStorage.getItem('healthRecords') || '[]');
+    const record = records.find(r => r.id === id);
+    
+    if (record) {
+      // 각 상태 업데이트
+      기본정보설정(record.기본정보);
+      성격설정(record.성격);
+      운동량설정(record.운동량);
+      스트레스설정(record.스트레스);
+      복용약물설정(record.복용약물);
+      복용기간설정(record.복용기간);
+      기호식설정(record.기호식);
+      맥파분석설정(record.맥파분석);
+      메모설정(record.메모);
+      // 증상 데이터 설정
+      setSelectedSymptoms(record.selectedSymptoms || []);
+    }
+  };
+
+  // 모든 데이터 목록 가져오기
+  const getHealthDataList = () => {
+    return JSON.parse(localStorage.getItem('healthRecords') || '[]');
+  };
+
+  // 특정 데이터 삭제
+  const deleteHealthData = (id) => {
+    const records = JSON.parse(localStorage.getItem('healthRecords') || '[]');
+    const updatedRecords = records.filter(r => r.id !== id);
+    localStorage.setItem('healthRecords', JSON.stringify(updatedRecords));
+  };
+
+  // 저장 버튼 핸들러 수정
+  const handleSubmit = () => {
+    const savedId = saveHealthData();
+    if (savedId) {
+      // 저장 성공 후 필요한 작업
+      console.log('저장된 데이터 ID:', savedId);
+    }
   };
 
   const PulseWaveSection = () => {
@@ -275,7 +325,7 @@ function App() {
       return Object.keys(중분류Data || {});
     };
 
-    // 소분류 옵션 ��져오기 함수 수정
+    // 소분류 옵션 져오기 함수 수정
     const get소분류Options = () => {
       if (!selectedCategories.대분류 || !selectedCategories.중분류) return [];
       const 중분류Data = 증상카테고리[selectedCategories.대분류][selectedCategories.중분류];
@@ -440,6 +490,47 @@ function App() {
     );
   };
 
+  // 데이터 목록 표시 컴포넌트
+  const DataListSection = () => {
+    const [records, setRecords] = useState([]);
+
+    useEffect(() => {
+      setRecords(getHealthDataList());
+    }, []);
+
+    return (
+      <section className="data-list-section">
+        <h3 className="section-title">저장된 기록</h3>
+        <div className="records-container">
+          {records.map(record => (
+            <div key={record.id} className="record-item">
+              <div className="record-info">
+                <span>{new Date(record.date).toLocaleDateString()}</span>
+                <span>{record.기본정보.이름}</span>
+              </div>
+              <div className="record-actions">
+                <button onClick={() => loadHealthData(record.id)}>
+                  불러오기
+                </button>
+                <button 
+                  onClick={() => {
+                    if (window.confirm('이 기록을 삭제하시겠습니까?')) {
+                      deleteHealthData(record.id);
+                      setRecords(getHealthDataList());
+                    }
+                  }}
+                  className="delete-btn"
+                >
+                  삭제
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  };
+
   return (
     <div className="App">
       <BasicInfoSection 기본정보={기본정보} 기본정보설정={기본정보설정} />
@@ -538,6 +629,7 @@ function App() {
         </div>
       </section>
       <MemoSection />
+      <DataListSection />
       <button className="submit-button" onClick={handleSubmit}>
         저장하기
       </button>

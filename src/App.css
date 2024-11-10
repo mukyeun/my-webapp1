@@ -618,3 +618,59 @@ input:focus, select:focus, textarea:focus {
   background-color: #cbd5e0;
   cursor: not-allowed;
 }
+
+/* 데이터 목록 스타일 */
+.data-list-section {
+  margin: 20px 0;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.records-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.record-info {
+  display: flex;
+  gap: 20px;
+}
+
+.record-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.record-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.record-actions button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.record-actions .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.record-actions button:hover {
+  opacity: 0.9;
+}
