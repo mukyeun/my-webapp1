@@ -1,7 +1,8 @@
 /* App.css */
 .App {
-  text-align: center;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .App-header {
@@ -35,12 +36,29 @@
 }
 
 .modern-select {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-width: 200px;
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
   background-color: white;
+  transition: all 0.2s;
+  color: #4a5568;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+.modern-select:hover {
+  border-color: #cbd5e0;
+}
+
+.modern-select:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+  outline: none;
 }
 
 .modern-select:disabled {
@@ -62,4 +80,541 @@ h2 {
   color: #666;
   font-size: 20px;
   margin-bottom: 20px;
+}
+
+.radio-row, .checkbox-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.radio-row label, .checkbox-row label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf2f7;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #4a5568;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row-small {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-row-medium {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.bmi-display {
+  padding: 0.75rem;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #2d3748;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+.required-field::after {
+  content: '*';
+  color: #e53e3e;
+  margin-left: 4px;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+  margin-bottom: 5px;
+}
+
+select[multiple] {
+  height: 150px;
+}
+
+small {
+  color: #666;
+  font-size: 12px;
+}
+
+.memo-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 1.2rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all 0.2s;
+  background-color: #fff;
+}
+
+.memo-textarea:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.memo-textarea::placeholder {
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    flex: 0 0 100%;
+  }
+  
+  .radio-row, .checkbox-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+section:not(:last-child) {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #3182ce;
+}
+
+/* 기존 CSS에 추가 */
+.medication-select {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.selected-medications {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.selected-medication-item {
+  display: flex;
+  align-items: center;
+  background-color: #e8f0fe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.remove-medication {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 8px;
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 16px;
+}
+
+.remove-medication:hover {
+  color: #ff4444;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.medication-display {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+.medication-display:read-only {
+  background-color: #f8f9fa;
+}
+
+.medication-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 증상 선택 관련 스타일 */
+.symptom-display {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  cursor: default;
+}
+
+.selected-symptoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.selected-symptom-item {
+  display: flex;
+  align-items: center;
+  background-color: #e8f0fe;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.remove-symptom {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 8px;
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 16px;
+}
+
+.remove-symptom:hover {
+  color: #ff4444;
+}
+
+.selected-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.remove-item {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.remove-item:hover {
+  color: #ff4444;
+}
+
+.chart-section {
+  border: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+
+.chart-header {
+  background: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+  color: #333;
+}
+
+.chart-content {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  border-bottom: 1px solid #eee;
+}
+
+.chart-label {
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-right: 1px solid #ddd;
+  font-weight: 500;
+  color: #444;
+  display: flex;
+  align-items: center;
+}
+
+.chart-field {
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.selection-grid section {
+  margin-bottom: 0;
+}
+
+/* 기본 섹션들은 전체 너비 사용 */
+.App > section {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* 그리드 내부 섹션들의 스타일 */
+.selection-grid .section-title {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.selection-grid .form-group {
+  margin-bottom: 0;
+}
+
+.selection-grid select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: white;
+}
+
+/* 반응형 처리 */
+@media (max-width: 768px) {
+  .selection-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.basic-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  border: 1px solid #edf2f7;
+}
+
+.lifestyle-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf2f7;
+}
+
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.lifestyle-section .form-group {
+  margin-bottom: 1rem;
+}
+
+.lifestyle-section .form-group:nth-last-child(-n+2) {
+  grid-column: span 1;
+}
+
+.lifestyle-section label {
+  display: block;
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.lifestyle-section .modern-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.lifestyle-section .modern-select:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .lifestyle-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .lifestyle-section .form-group:nth-last-child(-n+2) {
+    grid-column: auto;
+  }
+}
+
+.symptom-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.symptom-container {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.symptom-selectors {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.selected-symptoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  min-height: 2rem;
+}
+
+.symptom-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.remove-tag {
+  background: none;
+  border: none;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: #718096;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.remove-tag:hover {
+  color: #e53e3e;
+}
+
+.add-symptom-btn {
+  background-color: #4299e1;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.add-symptom-btn:hover {
+  background-color: #3182ce;
+}
+
+.add-symptom-btn:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
 }
