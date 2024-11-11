@@ -618,3 +618,30 @@ input:focus, select:focus, textarea:focus {
   background-color: #cbd5e0;
   cursor: not-allowed;
 }
+
+.symptom-selection {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.add-symptom-btn {
+  margin-top: 0;
+  height: 38px;
+  align-self: flex-start;
+}
