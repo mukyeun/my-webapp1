@@ -645,3 +645,19 @@ input:focus, select:focus, textarea:focus {
   height: 38px;
   align-self: flex-start;
 }
+
+/* 맥파 차트 스타일 */
+.pulse-wave-chart {
+  background: var(--section-background);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  box-shadow: var(--section-shadow);
+}
+
+.pulse-wave-chart h3 {
+  color: var(--primary-color);
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}

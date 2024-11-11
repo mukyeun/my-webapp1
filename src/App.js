@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+<<<<<<< Updated upstream
 import { 증상카테고리 } from './data/SymptomCategories';
 
 // App.js 최상단에 BasicInfoSection 컴포넌트를 별도로 정의
@@ -542,6 +543,53 @@ function App() {
       <button className="submit-button" onClick={handleSubmit}>
         저장하기
       </button>
+=======
+
+function App() {
+  // 상태 관리
+  const [대분류, 대분류설정] = useState('');
+  const [중분류, 중분류설정] = useState('');
+  const [소분류, 소분류설정] = useState('');
+  const [선택된증상목록, 증상목록설정] = useState([]);
+  const [맥파데이터, 맥파데이터설정] = useState({});
+  const [선택된약물, 약물설정] = useState([]);
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <h1>건강 정보 입력</h1>
+      </header>
+      
+      <main className="main-content">
+        {/* 증상 선택 섹션 */}
+        <section className="symptoms-section">
+          <h2>증상 선택</h2>
+          <div className="category-group">
+            {/* 대분류 선택 */}
+            <select 
+              value={대분류}
+              onChange={(e) => 대분류설정(e.target.value)}
+              className="modern-select"
+            >
+              <option value="">대분류 선택</option>
+              {/* 대분류 옵션들 */}
+            </select>
+          </div>
+        </section>
+
+        {/* 맥파 데이터 섹션 */}
+        <section className="pulse-section">
+          <h2>맥파 데이터</h2>
+          {/* 맥파 데이터 입력 폼 */}
+        </section>
+
+        {/* 약물 섹션 */}
+        <section className="medication-section">
+          <h2>복용 약물</h2>
+          {/* 약물 선택 폼 */}
+        </section>
+      </main>
+>>>>>>> Stashed changes
     </div>
   );
 }
