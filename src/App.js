@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
-import { 증상카테고리, 증상 } from './data/SymptomCategories';
+import { 증상 } from './data/SymptomCategories';
+import { 
+  saveHealthData, 
+  loadHealthData, 
+  deleteHealthData, 
+  backupHealthData, 
+  restoreHealthData 
+} from './services/dataService';
+import { validateHealthData } from './utils/validation';
+import SearchModal from './components/SearchModal';
 
 function App() {
   // 기본 정보 상태
@@ -77,20 +86,68 @@ function App() {
 
   const [기호식, 기호식설정] = useState('');
 
-  const handleSubmit = () => {
-    // 폼 데이터를 객체로 구성
+  // 에러 상태 추가
+  const [errors, setErrors] = useState({});
+
+  // 컴���넌트 마운트 시 저장된 데이터 불러오기
+  useEffect(() => {
+    const loadSavedData = async () => {
+      const savedData = await loadHealthData();
+      if (savedData) {
+        기본정보설정(savedData.기본정보 || {});
+        맥파분석설정(savedData.맥파분석 || {});
+        setSelectedSymptoms(savedData.selectedSymptoms || []);
+        성격설정(savedData.성격 || '');
+        운동량설정(savedData.운동량 || '');
+        스트레스설정(savedData.스트레스 || '');
+        메모설정(savedData.메모 || '');
+      }
+    };
+
+    loadSavedData();
+  }, []);
+
+  // handleSubmit 함수 수정
+  const handleSubmit = async () => {
+    // 저장할 데이터 구성
     const formData = {
       기본정보,
+      맥파분석,
+      selectedSymptoms,
       성격,
+      운동량,
+      스트레스,
       메모
     };
 
-    // 콘솔에 데이터 출력 (테스트용)
-    console.log('제출된 데이터:', formData);
+    // 유효성 검사
+    const { isValid, errors: validationErrors } = validateHealthData(formData);
+    
+    if (!isValid) {
+      setErrors(validationErrors);
+      alert('입력 정보를 확인해주세요.');
+      return;
+    }
 
-    // 여기에 실제 데이터 제출 로직 추가
-    // 예: API 호출, 로컬 스토리지 저장 등
-    alert('데이터가 성공적으로 저장되었습니다.');
+    try {
+      const success = await saveHealthData(formData);
+      if (success) {
+        alert('데이터가 성공적으로 저장되었습니다.');
+        setErrors({});  // 에러 상태 초기화
+      } else {
+        alert('데이터 저장 중 류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error('저장 중 오류 발생:', error);
+      alert('데이터 저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  // 에러 메시지 표시를 위한 헬퍼 함수
+  const renderError = (fieldName) => {
+    return errors[fieldName] ? (
+      <div className="error-message">{errors[fieldName]}</div>
+    ) : null;
   };
 
   // 기본 정보 입력 핸들러
@@ -176,6 +233,24 @@ function App() {
     return '(고도비만)';
   };
 
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+
+  const handleOpenSearchModal = () => setIsSearchModalOpen(true);
+  const handleCloseSearchModal = () => setIsSearchModalOpen(false);
+
+  const handleSelectSearchResult = (data) => {
+    if (data && data.기본정보) {
+      기본정보설정(data.기본정보);
+      if (data.맥파분석) 맥파분석설정(data.맥파분석);
+      if (data.selectedSymptoms) setSelectedSymptoms(data.selectedSymptoms);
+      if (data.성격) 성격설정(data.성격);
+      if (data.운동량) 운동량설정(data.운동량);
+      if (data.스트레스) 스트레스설정(data.스트레스);
+      if (data.메모) 메모설정(data.메모);
+    }
+    setIsSearchModalOpen(false);  // 모달 닫기
+  };
+
   return (
     <div className="App">
       <div className="medical-chart">
@@ -189,7 +264,9 @@ function App() {
               value={기본정보.이름}
               onChange={(e) => 기본정보설정({...기본정보, 이름: e.target.value})}
               placeholder="이름을 입력하세요"
+              className={errors.이름 ? 'error' : ''}
             />
+            {renderError('이름')}
           </div>
         </div>
 
@@ -202,7 +279,9 @@ function App() {
               value={기본정보.주민번호}
               onChange={handleInputChange}
               placeholder="주민등록번호를 입력하세요"
+              className={errors.주민번호 ? 'error' : ''}
             />
+            {renderError('주민번호')}
           </div>
         </div>
 
@@ -215,7 +294,9 @@ function App() {
               value={기본정보.연락처}
               onChange={handleInputChange}
               placeholder="연락처를 입력하세요"
+              className={errors.연락처 ? 'error' : ''}
             />
+            {renderError('연락처')}
           </div>
         </div>
 
@@ -228,6 +309,7 @@ function App() {
                 value={기본정보.키}
                 onChange={(e) => 기본정보설정({...기본정보, 키: e.target.value})}
                 placeholder="키"
+                className={errors.키 ? 'error' : ''}
               />
               <span>cm</span>
               <input
@@ -235,6 +317,7 @@ function App() {
                 value={기본정보.체중}
                 onChange={(e) => 기본정보설정({...기본정보, 체중: e.target.value})}
                 placeholder="체중"
+                className={errors.체중 ? 'error' : ''}
               />
               <span>kg</span>
               <div className="bmi-display">
@@ -252,12 +335,14 @@ function App() {
             <select 
               value={성격} 
               onChange={(e) => 성격설정(e.target.value)}
+              className={errors.성격 ? 'error' : ''}
             >
               <option value="">선택하세요</option>
               <option value="급한 편">급한 편</option>
               <option value="보통">보통</option>
               <option value="느린 편">느린 편</option>
             </select>
+            {renderError('성격')}
           </div>
         </div>
 
@@ -293,15 +378,17 @@ function App() {
               <select 
                 value={기호식} 
                 onChange={(e) => 기호식설정(e.target.value)}
+                className={errors.기호식 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
-                <option value="없음">없음</option>
-                <option value="술">술</option>
-                <option value="담배">담배</option>
-                <option value="커피">커피</option>
-                <option value="마약">마약</option>
+                <option value="매우 좋음">매우 좋음</option>
+                <option value="좋음">좋음</option>
+                <option value="보통">보통</option>
+                <option value="나쁨">나쁨</option>
+                <option value="매우 나쁨">매우 나쁨</option>
                 <option value="기타">기타</option>
               </select>
+              {renderError('기호식')}
             </div>
           </div>
 
@@ -311,6 +398,7 @@ function App() {
               <select 
                 value={운동량} 
                 onChange={(e) => 운동량설정(e.target.value)}
+                className={errors.운동량 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
                 <option value="매우 많음">매우 많음</option>
@@ -319,6 +407,7 @@ function App() {
                 <option value="적음">적음</option>
                 <option value="매우 적음">매우 적음</option>
               </select>
+              {renderError('운동량')}
             </div>
           </div>
 
@@ -328,14 +417,16 @@ function App() {
               <select 
                 value={스트레스} 
                 onChange={(e) => 스트레스설정(e.target.value)}
+                className={errors.스트레스 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
                 <option value="매우 많음">매우 많음</option>
                 <option value="많음">많음</option>
                 <option value="보통">보통</option>
-                <option value="적음">적음</option>
+                <option value="적음">음</option>
                 <option value="매우 적음">매우 적음</option>
               </select>
+              {renderError('스트레스')}
             </div>
           </div>
         </div>
@@ -352,8 +443,10 @@ function App() {
                 value={맥파분석.수축기혈압}
                 onChange={(e) => 맥파분석설정({...맥파분석, 수축기혈압: e.target.value})}
                 placeholder="수축기 혈압" 
+                className={errors.수축기혈압 ? 'error' : ''}
               />
               <span className="unit">mmHg</span>
+              {renderError('수축기혈압')}
             </div>
           </div>
 
@@ -365,8 +458,10 @@ function App() {
                 value={맥파분석.이완기혈압}
                 onChange={(e) => 맥파분석설정({...맥파분석, 이완기혈압: e.target.value})}
                 placeholder="이완기 혈압" 
+                className={errors.이완기혈압 ? 'error' : ''}
               />
               <span className="unit">mmHg</span>
+              {renderError('이완기혈압')}
             </div>
           </div>
 
@@ -378,8 +473,10 @@ function App() {
                 value={맥파분석.맥박}
                 onChange={(e) => 맥파분석설정({...맥파분석, 맥박: e.target.value})}
                 placeholder="맥박수" 
+                className={errors.맥박 ? 'error' : ''}
               />
               <span className="unit">회/분</span>
+              {renderError('맥박')}
             </div>
           </div>
         </div>
@@ -394,12 +491,14 @@ function App() {
               <select 
                 value={selectedCategories.대분류}
                 onChange={(e) => handleCategoryChange('대분류', e.target.value)}
+                className={errors.대분류 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
-                {Object.keys(증상카테고리).map(category => (
+                {Object.keys(증상).map(category => (
                   <option key={category} value={category}>{category}</option>
                 ))}
               </select>
+              {renderError('대분류')}
             </div>
           </div>
 
@@ -410,14 +509,16 @@ function App() {
                 value={selectedCategories.중분류}
                 onChange={(e) => handleCategoryChange('중분류', e.target.value)}
                 disabled={!selectedCategories.대분류}
+                className={errors.중분류 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
                 {selectedCategories.대분류 && 
-                  Object.keys(증상카테고리[selectedCategories.대분류]).map(subCategory => (
+                  Object.keys(증상[selectedCategories.대분류]).map(subCategory => (
                     <option key={subCategory} value={subCategory}>{subCategory}</option>
                   ))
                 }
               </select>
+              {renderError('중분류')}
             </div>
           </div>
 
@@ -428,22 +529,25 @@ function App() {
                 value={selectedCategories.소분류}
                 onChange={(e) => handleCategoryChange('소분류', e.target.value)}
                 disabled={!selectedCategories.중분류}
+                className={errors.소분류 ? 'error' : ''}
               >
                 <option value="">선택하세요</option>
-                {selectedCategories.중분류 && 
-                  증상[selectedCategories.중분류].map(symptom => (
+                {selectedCategories.중분류 && selectedCategories.대분류 && 
+                  증상[selectedCategories.대분류][selectedCategories.중분류].map(symptom => (
                     <option key={symptom} value={symptom}>{symptom}</option>
                   ))
                 }
               </select>
+              {renderError('소분류')}
             </div>
           </div>
         </div>
         
         <div className="symptom-add-button">
-          <button onClick={handleAddSymptom} disabled={!selectedCategories.소분류}>
+          <button onClick={handleAddSymptom} disabled={!selectedCategories.소분류} className={errors.소분류 ? 'error' : ''}>
             증상 추가
           </button>
+          {renderError('소분류')}
         </div>
 
         {selectedSymptoms.map((symptom, index) => (
@@ -470,7 +574,9 @@ function App() {
               value={메모}
               onChange={(e) => 메모설정(e.target.value)}
               placeholder="특이사항을 입력하세요"
+              className={errors.메모 ? 'error' : ''}
             />
+            {renderError('메모')}
           </div>
         </div>
       </div>
@@ -478,12 +584,63 @@ function App() {
       <div className="medical-chart">
         <div className="chart-row">
           <div className="chart-content">
-            <button className="submit-button" onClick={handleSubmit}>
-              저장하기
-            </button>
+            <div className="data-management-buttons">
+              <button className="search-button" onClick={handleOpenSearchModal}>
+                검색하기
+              </button>
+              <button className="submit-button" onClick={handleSubmit}>
+                저장하기
+              </button>
+              <button className="backup-button" onClick={backupHealthData}>
+                백업하기
+              </button>
+              <input
+                type="file"
+                id="restore-input"
+                style={{ display: 'none' }}
+                accept=".json"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    restoreHealthData(e.target.files[0])
+                      .then(() => {
+                        alert('데이터가 복원되었습니다.');
+                        window.location.reload();
+                      })
+                      .catch((error) => {
+                        alert('데이터 복원 중 오류가 발생했습니다: ' + error.message);
+                      });
+                  }
+                }}
+              />
+              <button 
+                className="restore-button" 
+                onClick={() => document.getElementById('restore-input').click()}
+              >
+                복원하기
+              </button>
+              <button 
+                className="delete-button" 
+                onClick={() => {
+                  if (window.confirm('모든 데이터를 삭제하시겠습니까?')) {
+                    deleteHealthData().then(() => {
+                      alert('데이터가 삭제되었습니다.');
+                      window.location.reload();
+                    });
+                  }
+                }}
+              >
+                삭제하기
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        onSelect={handleSelectSearchResult}
+      />
     </div>
   );
 }
