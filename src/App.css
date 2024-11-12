@@ -370,3 +370,88 @@ section, .medical-chart {
   width: 100%;
   padding: 0;
 }
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+input.error, select.error {
+  border-color: #dc3545;
+}
+
+input.error:focus, select.error:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.data-management-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.backup-button,
+.restore-button,
+.delete-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  color: white;
+}
+
+.backup-button {
+  background-color: #28a745;
+}
+
+.restore-button {
+  background-color: #17a2b8;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.backup-button:hover { background-color: #218838; }
+.restore-button:hover { background-color: #138496; }
+.delete-button:hover { background-color: #c82333; }
+
+.backup-button:disabled,
+.restore-button:disabled,
+.delete-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.search-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  color: white;
+  background-color: #007bff;  /* 파란색 계열 */
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.data-management-buttons .search-button,
+.data-management-buttons .submit-button,
+.data-management-buttons .backup-button,
+.data-management-buttons .restore-button,
+.data-management-buttons .delete-button {
+  min-width: 100px;  /* 버튼들의 너비를 일정하게 */
+}
+
+.search-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
